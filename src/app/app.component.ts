@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from './services/users/auth.service';
-import {flatMap, tap} from 'rxjs/operators';
+import {catchError, flatMap, tap} from 'rxjs/operators';
 import {User} from './types/users/types';
+import {of} from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   loginForm: FormGroup;
   email: FormControl = new FormControl('', Validators.compose([
@@ -25,6 +26,8 @@ export class AppComponent {
   user: User;
 
   loading: boolean = false;
+
+  isAuthorized: boolean = false;
 
   constructor(private authService: AuthService) {
     this.loginForm = new FormGroup({
@@ -52,6 +55,26 @@ export class AppComponent {
         .subscribe();
     }
     console.log(this.loginForm);
+  }
+
+  ngOnInit(): void {
+    this.authService
+      .getUser()
+      .pipe(
+        tap(
+          (user) => {
+            this.user = user;
+            this.isAuthorized = true;
+          }
+        ),
+        catchError(
+          (err) => {
+            this.isAuthorized = false;
+            return of(err);
+          }
+        )
+      )
+      .subscribe()
   }
 
 }

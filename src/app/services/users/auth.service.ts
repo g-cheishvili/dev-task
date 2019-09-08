@@ -1,27 +1,39 @@
 import {Inject, Injectable} from '@angular/core';
-import {API_BASE} from '../../tokens';
+import {API_BASE, TOKEN_KEY} from '../../tokens';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
 import {User} from '../../types/users/types';
+import {LocalStorageService} from '../shared/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl: string;
-  private _token: string;
+  private tokenKey: string;
   private user: User;
 
-  get token() {
-    return this._token;
+  private set token(value: string) {
+    this.localStorageService.set(this.tokenKey, value);
+  }
+
+  private get token(): string | null {
+    return this.localStorageService.get(this.tokenKey) as string;
   }
 
   constructor(
     @Inject(API_BASE) apiUrl: string,
-    private http: HttpClient
+    @Inject(TOKEN_KEY) tokenKey: string,
+    private http: HttpClient,
+    private localStorageService: LocalStorageService
     ) {
     this.apiUrl = `${apiUrl}`;
+    this.tokenKey = tokenKey;
+  }
+
+  getToken() {
+    return this.token;
   }
 
   login({email, password}): Observable<{token: string}> {
@@ -30,7 +42,7 @@ export class AuthService {
       .pipe(
         tap(
           (response) => {
-            this._token = response.token;
+            this.token = response.token;
           }
         ),
         catchError(

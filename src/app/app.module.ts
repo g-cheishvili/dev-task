@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
-import {API_BASE} from './tokens';
+import {API_BASE, TOKEN_KEY} from './tokens';
 import {environment} from '../environments/environment';
 import {SharedModule} from './modules/shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -24,7 +24,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     {
       provide: API_BASE,
       useValue: environment.server.apiEndpoint
-    }
+    },
+    {
+      provide: TOKEN_KEY,
+      useValue: environment.storageKeys.token
+    },
   ],
   bootstrap: [AppComponent]
 })

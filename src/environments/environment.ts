@@ -6,6 +6,10 @@ export const environment = {
   production: false,
   server: {
     apiEndpoint: 'http://dev-task.emis.ge/api'
+  },
+  storageKeys: {
+    token: '__token__',
+
   }
 };
 
