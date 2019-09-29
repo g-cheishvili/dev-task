@@ -5,13 +5,12 @@ import {HttpClient} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
 import {User} from '../../types/users/types';
 import {LocalStorageService} from '../shared/local-storage.service';
+import {AuthData, AuthReponse} from '../../types/auth/types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl: string;
-  private tokenKey: string;
   private user: User;
 
   private set token(value: string) {
@@ -23,34 +22,30 @@ export class AuthService {
   }
 
   constructor(
-    @Inject(API_BASE) apiUrl: string,
-    @Inject(TOKEN_KEY) tokenKey: string,
+    @Inject(API_BASE) private apiUrl: string,
+    @Inject(TOKEN_KEY) private tokenKey: string,
     private http: HttpClient,
     private localStorageService: LocalStorageService
     ) {
-    this.apiUrl = `${apiUrl}`;
-    this.tokenKey = tokenKey;
   }
 
   getToken() {
     return this.token;
   }
 
-  login({email, password}): Observable<{token: string}> {
+  clearToken() {
+    this.token = '';
+  }
+
+  login(formData: AuthData): Observable<AuthReponse> {
     return this.http
-      .post<{token: string}>(`${this.apiUrl}/login`, {email, password})
+      .post<AuthReponse>(`${this.apiUrl}/login`, formData)
       .pipe(
         tap(
           (response) => {
             this.token = response.token;
           }
         ),
-        catchError(
-          (err) => {
-            console.error(err);
-            return of(err);
-          }
-        )
       );
   }
 
