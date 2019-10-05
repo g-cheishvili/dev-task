@@ -3,7 +3,7 @@ import {API_BASE, TOKEN_KEY} from '../../tokens';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
-import {User} from '../../types/users/types';
+import {User, UserPermission} from '../../types/users/types';
 import {LocalStorageService} from '../shared/local-storage.service';
 import {AuthData, AuthReponse} from '../../types/auth/types';
 
@@ -63,10 +63,49 @@ export class AuthService {
         map(
           (userResponse: {user: User}) => userResponse.user
         ),
+        map(
+          (user: User) => {
+            const userRoles = user.roles
+              .map(role => role.permissions);
+            const permissions: string[] = userRoles
+              .reduce<string[]>(
+                (acc, next: UserPermission[]) => {
+                  const strings = next.map(permission => permission.name);
+                  const newAcc = [
+                    ...acc,
+                    ...strings
+                  ];
+                  return newAcc;
+                }
+              , []);
+
+            user['permissions'] = new Set<string>(permissions);
+            return user;
+          }
+        ),
         tap(
           (user) => this.user = user
+        ),
+        tap(
+          user => console.log(user)
         )
       );
+  }
+
+  hasPermissionTo = (permissionName: string) => {
+    if(!this.user || !this.user.permissions) {
+      return false;
+    }
+    return this.user.permissions.has(permissionName);
+  };
+
+  hasPermissionAll = (permissionNames: string[]) => {
+    for (const permissionName of permissionNames) {
+      if(!this.hasPermissionTo(permissionName)) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

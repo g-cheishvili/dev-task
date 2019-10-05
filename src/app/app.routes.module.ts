@@ -13,13 +13,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
-      },
-      {
-        path: 'home',
         component: HomeComponent
       },
+      {
+        path: 'institutions',
+        loadChildren: './modules/institutions/institutions.module#InstitutionsModule'
+      }
     ]
   },
   {
@@ -44,5 +43,5 @@ const routes: Routes = [
   ]
 })
 export class AppRoutesModule {
-  
+
 }

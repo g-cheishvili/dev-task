@@ -6,6 +6,7 @@ export interface User {
   created_at: string,
   updated_at: string,
   roles: UserRole[]
+  permissions: Set<string>
 }
 
 export interface UserRole {

@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
       .pipe(
         tap(
           () => {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
           },
           () => {
             this.showError = true;
