@@ -1,0 +1,78 @@
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <ng-container *ngFor="let column of columns">
+        <th>
+          <ng-container *ngIf="config[column] && config[column]?.label; else columnDefaultName">
+            {{ config[column]?.label }}
+          </ng-container>
+          <ng-template #columnDefaultName>
+            {{ column }}
+          </ng-template>
+        </th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody *ngIf="data; else loading">
+    <ng-container *ngIf="data.length > 0; else notFound">
+
+
+      <tr *ngFor="let element of data">
+
+        <td *ngFor="let column of columns">
+
+          <ng-container *ngIf="config[column] && config[column]?.type; else simpleValue">
+            <ng-container [ngSwitch]="config[column].type">
+
+              <a [attr.href]="config[column].mapper(element)" *ngSwitchCase="'link'">
+                <ng-container *ngIf="extractColumn(element, column) !== ''">
+                  {{ extractColumn(element, column) }}
+                </ng-container>
+                <ng-container *ngIf="!(extractColumn(element, column) !== '')">
+                  {{ config[column].mapper(element) }}
+                </ng-container>
+              </a>
+
+              <a [routerLink]="config[column].mapper(element)" *ngSwitchCase="'routerLink'">
+                <ng-container *ngIf="extractColumn(element, column) !== ''">
+                  {{ extractColumn(element, column) }}
+                </ng-container>
+                <ng-container *ngIf="!(extractColumn(element, column) !== '')">
+                  {{ config[column].mapper(element) }}
+                </ng-container>
+              </a>
+              <span *ngSwitchCase="'boolean'">
+                {{ extractColumn(element, column) ? 'კი' : 'არა' }}
+              </span>
+            </ng-container>
+          </ng-container>
+
+          <ng-template #simpleValue>
+            {{ extractColumn(element, column) }}
+          </ng-template>
+
+
+        </td>
+
+      </tr>
+
+
+    </ng-container>
+    <ng-template #notFound>
+      <tr>
+        <td [attr.colspan]="columns.length">
+          <alert [dismissible]="false" type="warning">
+            ჩანაწერები ვერ მოიძებნა
+          </alert>
+        </td>
+      </tr>
+    </ng-template>
+  </tbody>
+
+  <ng-template #loading>
+    <alert [dismissible]="false" type="info">
+      ჩანაწერები იტვირთება
+    </alert>
+  </ng-template>
+
+</table>

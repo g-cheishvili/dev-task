@@ -2,7 +2,7 @@
   მოგესალმებით ტესტურ სისტემაში
 </alert>
 <ul class="list-group mt-3">
-  <li class="list-group-item list-group-item-action" routerLink="/users" *ngIf="hasPermissionTo('read_users')">
+  <li class="list-group-item list-group-item-action" [routerLink]="'/users'" *ngIf="hasPermissionTo('read_users')">
     მომხმარებლების სია
   </li>
   <li class="list-group-item list-group-item-action" [routerLink]="'/institutions'" *ngIf="hasPermissionTo('read_institutions')">

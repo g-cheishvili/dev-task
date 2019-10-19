@@ -10,7 +10,12 @@ const routes: Routes = [
   },
   {
     path: 'index',
-    component: IndexPage
+    component: IndexPage,
+    data: {
+      permissions: [
+        'can_read_institutions'
+      ]
+    }
   }
 ];
 

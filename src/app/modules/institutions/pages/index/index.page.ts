@@ -1,7 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {InstitutionsService} from '../../../../services/institutions/institutions.service';
-import {tap} from 'rxjs/operators';
-import {Subscription} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
+import {Institution} from '../../../../types/institutions/types';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -9,28 +11,32 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./index.page.scss']
 })
 export class IndexPage implements OnInit, OnDestroy {
-
-  instutionSearchSubscription: Subscription;
+  institutions: Observable<Institution[]>;
+  institutionSearchSubscription: Subscription;
 
   constructor(
-    private institutionService: InstitutionsService
+    private institutionService: InstitutionsService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
+    this.institutions = this.institutionService
+      .search()
+      .pipe(
+        map(res => res.data)
+      );
   }
 
   ngOnInit() {
-    this.instutionSearchSubscription = this.institutionService
-      .search()
+    this.activatedRoute.data
       .pipe(
-        tap(res => {
-
-        })
+        tap(r => console.log(r))
       )
-      .subscribe();
+      .subscribe()
   }
 
   ngOnDestroy(): void {
-    if (this.instutionSearchSubscription) {
-      this.instutionSearchSubscription.unsubscribe();
+    if (this.institutionSearchSubscription) {
+      this.institutionSearchSubscription.unsubscribe();
     }
   }
 

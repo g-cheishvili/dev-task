@@ -1,1 +1,5 @@
-<p>index works!</p>
+<ul>
+  <li *ngFor="let inst of institutions | async">
+    {{ inst.name }}
+  </li>
+</ul>

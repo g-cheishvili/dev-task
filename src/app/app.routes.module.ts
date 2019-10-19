@@ -9,7 +9,9 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayout,
-    canActivate: [AuthGuard],
+    canActivate: [
+      AuthGuard
+    ],
     children: [
       {
         path: '',
@@ -18,6 +20,10 @@ const routes: Routes = [
       {
         path: 'institutions',
         loadChildren: './modules/institutions/institutions.module#InstitutionsModule'
+      },
+      {
+        path: 'users',
+        loadChildren: './modules/users/users.module#UsersModule'
       }
     ]
   },

@@ -9,7 +9,7 @@ export class ErrorInterceptor implements HttpInterceptor{
       catchError(
         err => {
 
-          return of(err);
+          throw err;
         }
       )
     )

@@ -1,19 +1,32 @@
 import {Inject, Injectable} from '@angular/core';
 import {API_BASE} from '../../tokens';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Institution, SearchData} from '../../types/institutions/types';
 import {Paginated} from '../../types/shared/types';
+import {ReplaySubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstitutionsService {
-  private baseUrl: string;
+  private readonly baseUrl: string;
+
+  // public replay: ReplaySubject<number> = new ReplaySubject();
+
   constructor(
     @Inject(API_BASE) apiUrl: string,
     private http: HttpClient
   ) {
     this.baseUrl = `${apiUrl}/institutions`;
+    // let x = 0;
+    // const interval = setInterval(() => {
+    //   this.replay.next(x);
+    //   x++;
+    //   if (x === 10) {
+    //     clearInterval(interval);
+    //   }
+    // }, 1);
+
   }
 
   search(searchData: SearchData = {}) {
@@ -22,7 +35,7 @@ export class InstitutionsService {
       ...searchData
     };
     return this.http.get<Paginated<Institution>>(`${this.baseUrl}`, {
-      params: (searchParams as {[key: string]: string})
+      params: (searchParams as { [key: string]: string })
     });
   }
 }

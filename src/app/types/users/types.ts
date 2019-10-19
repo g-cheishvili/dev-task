@@ -25,3 +25,18 @@ export interface UserPermission {
   created_at: string,
   updated_at: string,
 }
+
+export interface CreateUserData {
+  name: string;
+  email: string;
+  role_id: number;
+  password: string
+}
+
+
+export interface UpdateUserData {
+  name: string;
+  email: string;
+  role_id: number;
+  password?: string
+}
